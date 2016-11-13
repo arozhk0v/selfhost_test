@@ -9,7 +9,7 @@ using System.Web.Http;
 
 namespace Self_host_service.Controllers
 {
-    class ExchangerateController : ApiController
+    public class ExchangeratesController : ApiController
     {
         Exchangerate[] exchangerates = new Exchangerate[]  
         {  
@@ -39,6 +39,7 @@ namespace Self_host_service.Controllers
             if (excchangerate == null)
             {
                 throw new HttpResponseException(HttpStatusCode.NotFound);
+                Console.WriteLine("chetch");
             }
             return excchangerate;
         }

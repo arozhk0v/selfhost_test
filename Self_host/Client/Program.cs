@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Net.Http;
+using System.Net;
 
 namespace Client
 {
@@ -11,15 +12,16 @@ namespace Client
     {
         static HttpClient client = new HttpClient();
 
-        static void ListAllExchangerate()
+        static void ListAllExchangerates()
         {
             HttpResponseMessage resp = client.GetAsync("api/exchangerates").Result;
             resp.EnsureSuccessStatusCode();
 
+
             var exchangerates = resp.Content.ReadAsAsync<IEnumerable<Self_host_service.Models.Exchangerate>>().Result;
             foreach (var p in exchangerates)
             {
-                Console.WriteLine("{0} {1} {2} ({3})", p.Ccy, p.Base_ccy, p.Buy, p.Sale);
+                Console.WriteLine("{0} {1} {2} {3}", p.Ccy, p.Base_ccy, p.Buy, p.Sale);
             }
         }
 
@@ -27,9 +29,11 @@ namespace Client
         {
             client.BaseAddress = new Uri("http://localhost:8080");
 
-            ListAllExchangerate();
+            ListAllExchangerates();
             //ListProduct(1);
             //ListProducts("toys");
+
+            // новый api - https://api.privatbank.ua/p24api/pubinfo?exchange&coursid=5
 
             Console.WriteLine("Press Enter to quit.");
             Console.ReadLine();

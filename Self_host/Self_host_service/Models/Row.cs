@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace Self_host_service.Models
 {
-    public class Row
-    {
-        public List<Exchangerate> Exchangerate { get; set; }
-    }
+    //public class Row
+    //{
+    //    public List<Exchangerate> Exchangerate { get; set; }
+    //}
 }
