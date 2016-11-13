@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Self_host_service.Models
 {
-    class Row
+    public class Row
     {
         public List<Exchangerate> Exchangerate { get; set; }
     }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Self_host_service.Models
 {
-    class Exchangerate
+    public class Exchangerate
     {
         public string Ccy { get; set; }
         public string Base_ccy { get; set; }
