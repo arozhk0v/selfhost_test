@@ -1,53 +1,59 @@
-﻿using Self_host_service.Models;
+﻿using Self_host_service.DB;
+using Self_host_service.DTOs;
+using Self_host_service.Models;
 using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web.Http;
+using System.Web.Http.Description;
 
 namespace Self_host_service.Controllers
 {
     public class ExchangeratesController : ApiController
     {
-        Exchangerate[] exchangerates = new Exchangerate[]  
-        {  
-            new Exchangerate { Ccy = "EUR", Base_ccy = "UAN", Buy = 28.50000m, Sale = 28.80000m },  
-            new Exchangerate { Ccy = "RUR", Base_ccy = "UAN", Buy = 0.39000m, Sale = 0.42000m },  
-            new Exchangerate { Ccy = "USD", Base_ccy = "UAN", Buy = 26.20000m, Sale = 26.40000m }
-        };
+        //public Exchangerate[] exchangerates { get; set; }
 
 
-        /// <summary>
-        /// Метод для получения всех строк
-        /// </summary>
-        /// <returns></returns>
-        public IEnumerable<Exchangerate> GetAllExchangerates()
-        {
-            return exchangerates;
-        }
+        private EntityDbContext db = new EntityDbContext();
 
-        /// <summary>
-        /// Метод для получения значения по ccy.
-        /// </summary>
-        /// <param name="ccy">Название валюты.</param>
-        /// <returns></returns>
-        public Exchangerate GetExchangerateByCcy(string ccy)
-        {
-            var excchangerate = exchangerates.FirstOrDefault((p) => p.Ccy == ccy);
-            if (excchangerate == null)
+        // Typed lambda expression for Select() method. 
+        private static readonly Expression<Func<Exchangerate, ExchangerateDto>> AsExchangerateDto =
+            x => new ExchangerateDto
             {
-                throw new HttpResponseException(HttpStatusCode.NotFound);
-                Console.WriteLine("chetch");
-            }
-            return excchangerate;
+                Base = x.Base,
+                Date = x.Date,
+                rates = x.rates,
+            };
+
+        // GET api/Exchangerates
+        public IQueryable<ExchangerateDto> GetExchangerates()
+        {
+            return db.ExchangerateList.Include(b => b.Base).Select(AsExchangerateDto);
         }
 
-        public IEnumerable<Exchangerate> GetExchangerateByCategory(string base_ccy)
+
+        // GET api/Exchangerates/2
+        [ResponseType(typeof(ExchangerateDto))]
+        public async Task<IHttpActionResult> GetExchangerate(int id)
         {
-            return exchangerates.Where(p => string.Equals(p.Base_ccy, base_ccy,
-                    StringComparison.OrdinalIgnoreCase));
+            ExchangerateDto exchangerate = await db.ExchangerateList.Include(b => b.Base)
+                .Where(b => b.Id== id)
+                .Select(AsExchangerateDto)
+                .FirstOrDefaultAsync();
+            if (exchangerate == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(exchangerate);
         }
+
+
+        
     }
 }

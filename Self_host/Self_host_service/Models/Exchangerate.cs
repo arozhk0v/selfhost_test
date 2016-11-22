@@ -8,9 +8,11 @@ namespace Self_host_service.Models
 {
     public class Exchangerate
     {
-        public string Ccy { get; set; }
-        public string Base_ccy { get; set; }
-        public decimal Buy { get; set; }
-        public decimal Sale { get; set; }
+        public int Id { get; set; }
+        public string @Base { get; set; }
+
+        public DateTime Date { get; set; }
+
+        public Rates rates { get; set; }
     }
 }

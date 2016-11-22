@@ -12,16 +12,27 @@ namespace Client
     {
         static HttpClient client = new HttpClient();
 
+
+        //static void GetDateExchangerates()
+        //{
+        //    HttpResponseMessage resp = client.GetAsync("api/exchangerates/1").Result;
+        //    resp.EnsureSuccessStatusCode();
+
+        //    var a = resp.Content.ReadAsAsync<IQueryable<Self_host_service.Controllers.ExchangeratesController.GetExchangerates>>().Result;
+        //}
+
+
+
         static void ListAllExchangerates()
         {
             HttpResponseMessage resp = client.GetAsync("api/exchangerates").Result;
             resp.EnsureSuccessStatusCode();
 
-
+            
             var exchangerates = resp.Content.ReadAsAsync<IEnumerable<Self_host_service.Models.Exchangerate>>().Result;
             foreach (var p in exchangerates)
             {
-                Console.WriteLine("{0} {1} {2} {3}", p.Ccy, p.Base_ccy, p.Buy, p.Sale);
+                Console.WriteLine("{0} {1} {2} {3} {4} {5}", p.Id, p.Base, p.Date, p.rates.CAD, p.rates.GBP, p.rates.USD);
             }
         }
 
