@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Self_host_service.DB;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,12 +13,16 @@ namespace Self_host_service
     {
         static void Main(string[] args)
         {
+           
             var config = new HttpSelfHostConfiguration("http://localhost:8080");
 
             config.Routes.MapHttpRoute(
                 "API Default", "api/{controller}/{id}",
                 new { id = RouteParameter.Optional });
 
+            //загрузка котировок текущего месяца
+            WorkerDB.AddExchangeratesCurrentMounth();
+            
             using (HttpSelfHostServer server = new HttpSelfHostServer(config))
             {
                 server.OpenAsync().Wait();
