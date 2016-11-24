@@ -61,8 +61,23 @@ namespace Self_host_service.Controllers
         [Route("date/{date1:datetime:regex(\\d{4}.\\d{2}.\\d{2})}-{date2:datetime:regex(\\d{4}.\\d{2}.\\d{2})}")]
         public IQueryable<ExchangerateDto> GetPartExchangerates(DateTime date1, DateTime date2)
         {
-
             //проверка на присутствие котировок за определенную дату
+            bool absent = false;
+            var exchangerate = db.ExchangerateList;
+            
+            for (var currentDay = date1; currentDay <= date2; currentDay = currentDay.AddDays(1))
+            {
+                foreach (var p in exchangerate)
+                {
+                    if (currentDay == p.Date)
+                    {
+                        absent = true;
+                        break;
+                    }
+                }
+                if (!absent) WorkerDB.AddNewExchangerate(currentDay);
+                absent = false;
+            }
 
 
             return db.ExchangerateList.Include(b => b.Base)

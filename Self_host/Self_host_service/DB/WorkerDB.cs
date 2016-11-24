@@ -54,6 +54,13 @@ namespace Self_host_service.DB
         }
 
 
+        public static void AddNewExchangerate(DateTime date)
+        {
+            AddNewExchangerate("http://api.fixer.io/" + date.Year + "-" + date.ToString("MM") + "-" + date.ToString("dd"));
+        }
+
+
+
         /// <summary>
         /// Добавление новых элементов в таблицу.
         /// </summary>

@@ -63,7 +63,7 @@ namespace Client
             var exchangerates = resp.Content.ReadAsAsync<IEnumerable<Self_host_service.Models.Exchangerate>>().Result;
             foreach (var ex in exchangerates)
             {
-                Console.WriteLine("{0} {1} {2} {3}", ex.Base, ex.rates.CAD, ex.rates.GBP, ex.rates.USD);
+                Console.WriteLine("{0} - {1} {2} {3} {4}", ex.Date.ToString("dd.MM.yyyy"), ex.Base, ex.rates.CAD, ex.rates.GBP, ex.rates.USD);
             }
         }
 
@@ -71,8 +71,8 @@ namespace Client
         {
             client.BaseAddress = new Uri("http://localhost:8080");
             
-            DateTime dat1 = new DateTime(2016, 11, 02);
-            DateTime dat2 = new DateTime(2016, 11, 10);
+            DateTime dat1 = new DateTime(2016, 10, 20);
+            DateTime dat2 = new DateTime(2016, 11, 03);
 
             GetPartDateExchangerates(dat1, dat2);
             //ListAllExchangerates();
