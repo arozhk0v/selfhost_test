@@ -12,14 +12,25 @@ namespace Client
     {
         static HttpClient client = new HttpClient();
 
+        /// <summary>
+        /// Получения котрировок для конкретного дня.
+        /// </summary>
+        /// <param name="date"></param> 
+        static void GetDateExchangerates(DateTime date)
+        {
+            HttpResponseMessage resp = client.GetAsync("api/exchangerates").Result;
+            resp.EnsureSuccessStatusCode();
 
-        //static void GetDateExchangerates()
-        //{
-        //    HttpResponseMessage resp = client.GetAsync("api/exchangerates/1").Result;
-        //    resp.EnsureSuccessStatusCode();
+            var exchangerates = resp.Content.ReadAsAsync<IEnumerable<Self_host_service.Models.Exchangerate>>().Result;
+            foreach (var ex in exchangerates)
+            {
+                if (ex.Date == date)
+                {
+                    Console.WriteLine("{0} {1} {2} {3}", ex.Base, ex.rates.CAD, ex.rates.GBP, ex.rates.USD);
+                }
+            }
 
-        //    var a = resp.Content.ReadAsAsync<IQueryable<Self_host_service.Controllers.ExchangeratesController.GetExchangerates>>().Result;
-        //}
+        }
 
 
 
@@ -39,9 +50,10 @@ namespace Client
         static void Main(string[] args)
         {
             client.BaseAddress = new Uri("http://localhost:8080");
-
-            ListAllExchangerates();
-            //ListProduct(1);
+            
+            DateTime dat = new DateTime(2016, 11, 22);
+            //ListAllExchangerates();
+            GetDateExchangerates(dat);
             //ListProducts("toys");
 
             // новый api - https://api.privatbank.ua/p24api/pubinfo?exchange&coursid=5
