@@ -16,9 +16,15 @@ namespace Self_host_service
            
             var config = new HttpSelfHostConfiguration("http://localhost:8080");
 
-            config.Routes.MapHttpRoute(
-                "API Default", "api/{controller}/{id}",
-                new { id = RouteParameter.Optional });
+            config.MapHttpAttributeRoutes();
+            
+            //config.Routes.MapHttpRoute(
+            //    "API Default", "api/{controller}/{id}",
+            //    new { id = RouteParameter.Optional });
+
+            
+            //очистить таблицу
+            //WorkerDB.TableClear("Exchangerates");
 
             //загрузка котировок текущего месяца
             WorkerDB.AddExchangeratesCurrentMounth();

@@ -14,6 +14,8 @@ using System.Web.Http.Description;
 
 namespace Self_host_service.Controllers
 {
+
+    [RoutePrefix("api/exchangerates")]
     public class ExchangeratesController : ApiController
     {
         //public Exchangerate[] exchangerates { get; set; }
@@ -31,6 +33,7 @@ namespace Self_host_service.Controllers
             };
 
         // GET api/Exchangerates
+        [Route("")]
         public IQueryable<ExchangerateDto> GetExchangerates()
         {
             return db.ExchangerateList.Include(b => b.Base).Select(AsExchangerateDto);
@@ -38,11 +41,12 @@ namespace Self_host_service.Controllers
 
 
         // GET api/Exchangerates/2
+        [Route("{id:int}")]
         [ResponseType(typeof(ExchangerateDto))]
         public async Task<IHttpActionResult> GetExchangerate(int id)
         {
             ExchangerateDto exchangerate = await db.ExchangerateList.Include(b => b.Base)
-                .Where(b => b.Id== id)
+                .Where(b => b.Id == id)
                 .Select(AsExchangerateDto)
                 .FirstOrDefaultAsync();
             if (exchangerate == null)
@@ -52,6 +56,20 @@ namespace Self_host_service.Controllers
 
             return Ok(exchangerate);
         }
+
+
+        [Route("date/{date1:datetime:regex(\\d{4}.\\d{2}.\\d{2})}-{date2:datetime:regex(\\d{4}.\\d{2}.\\d{2})}")]
+        public IQueryable<ExchangerateDto> GetPartExchangerates(DateTime date1, DateTime date2)
+        {
+
+            //проверка на присутствие котировок за определенную дату
+
+
+            return db.ExchangerateList.Include(b => b.Base)
+                .Where(b => DbFunctions.TruncateTime(b.Date) >= DbFunctions.TruncateTime(date1) && 
+                    DbFunctions.TruncateTime(b.Date) <= DbFunctions.TruncateTime(date2)).Select(AsExchangerateDto);
+        }
+
 
 
         

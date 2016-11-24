@@ -33,7 +33,9 @@ namespace Client
         }
 
 
-
+        /// <summary>
+        /// Получение всех котировок.
+        /// </summary>
         static void ListAllExchangerates()
         {
             HttpResponseMessage resp = client.GetAsync("api/exchangerates").Result;
@@ -47,13 +49,33 @@ namespace Client
             }
         }
 
+
+        /// <summary>
+        /// Получить диапазон значений.
+        /// </summary>
+        /// <param name="date1"></param>
+        /// <param name="date2"></param>
+        static void GetPartDateExchangerates(DateTime date1, DateTime date2)
+        {
+            HttpResponseMessage resp = client.GetAsync(string.Format("api/exchangerates/date/{0}-{1}", date1.ToString("yyyy.MM.dd"), date2.ToString("yyyy.MM.dd"))).Result;
+            resp.EnsureSuccessStatusCode();
+
+            var exchangerates = resp.Content.ReadAsAsync<IEnumerable<Self_host_service.Models.Exchangerate>>().Result;
+            foreach (var ex in exchangerates)
+            {
+                Console.WriteLine("{0} {1} {2} {3}", ex.Base, ex.rates.CAD, ex.rates.GBP, ex.rates.USD);
+            }
+        }
+
         static void Main(string[] args)
         {
             client.BaseAddress = new Uri("http://localhost:8080");
             
-            DateTime dat = new DateTime(2016, 11, 22);
+            DateTime dat1 = new DateTime(2016, 11, 02);
+            DateTime dat2 = new DateTime(2016, 11, 10);
+
+            GetPartDateExchangerates(dat1, dat2);
             //ListAllExchangerates();
-            GetDateExchangerates(dat);
             //ListProducts("toys");
 
             // новый api - https://api.privatbank.ua/p24api/pubinfo?exchange&coursid=5
